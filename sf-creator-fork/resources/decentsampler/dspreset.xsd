@@ -1,0 +1,134 @@
+<xs:schema attributeFormDefault="unqualified" elementFormDefault="qualified" xmlns:xs="http://www.w3.org/2001/XMLSchema">
+  <xs:element name="DecentSampler">
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element name="ui">
+          <xs:complexType>
+            <xs:sequence>
+              <xs:element name="tab">
+                <xs:complexType>
+                  <xs:sequence>
+                    <xs:element name="labeled-knob" maxOccurs="unbounded" minOccurs="0">
+                      <xs:complexType>
+                        <xs:sequence>
+                          <xs:element name="binding" maxOccurs="unbounded" minOccurs="0">
+                            <xs:complexType>
+                              <xs:simpleContent>
+                                <xs:extension base="xs:string">
+                                  <xs:attribute type="xs:string" name="type" use="optional"/>
+                                  <xs:attribute type="xs:string" name="level" use="optional"/>
+                                  <xs:attribute type="xs:byte" name="position" use="optional"/>
+                                  <xs:attribute type="xs:string" name="parameter" use="optional"/>
+                                  <xs:attribute type="xs:string" name="translation" use="optional"/>
+                                  <xs:attribute type="xs:byte" name="translationOutputMin" use="optional"/>
+                                  <xs:attribute type="xs:float" name="translationOutputMax" use="optional"/>
+                                  <xs:attribute type="xs:string" name="translationTable" use="optional"/>
+                                </xs:extension>
+                              </xs:simpleContent>
+                            </xs:complexType>
+                          </xs:element>
+                        </xs:sequence>
+                        <xs:attribute type="xs:short" name="x" use="optional"/>
+                        <xs:attribute type="xs:byte" name="y" use="optional"/>
+                        <xs:attribute type="xs:string" name="label" use="optional"/>
+                        <xs:attribute type="xs:string" name="type" use="optional"/>
+                        <xs:attribute type="xs:short" name="minValue" use="optional"/>
+                        <xs:attribute type="xs:short" name="maxValue" use="optional"/>
+                        <xs:attribute type="xs:string" name="textColor" use="optional"/>
+                        <xs:attribute type="xs:float" name="value" use="optional"/>
+                      </xs:complexType>
+                    </xs:element>
+                  </xs:sequence>
+                  <xs:attribute type="xs:string" name="name"/>
+                </xs:complexType>
+              </xs:element>
+            </xs:sequence>
+            <xs:attribute type="xs:string" name="bgImage"/>
+            <xs:attribute type="xs:short" name="width"/>
+            <xs:attribute type="xs:short" name="height"/>
+            <xs:attribute type="xs:string" name="layoutMode"/>
+            <xs:attribute type="xs:string" name="bgMode"/>
+          </xs:complexType>
+        </xs:element>
+        <xs:element name="groups">
+          <xs:complexType>
+            <xs:sequence>
+              <xs:element name="group" maxOccurs="unbounded" minOccurs="0">
+                <xs:complexType>
+                  <xs:sequence>
+                    <xs:element name="sample" maxOccurs="unbounded" minOccurs="0">
+                      <xs:complexType>
+                        <xs:simpleContent>
+                          <xs:extension base="xs:string">
+                            <xs:attribute type="xs:string" name="path" use="optional"/>
+                            <xs:attribute type="xs:byte" name="rootNote" use="optional"/>
+                            <xs:attribute type="xs:byte" name="loNote" use="optional"/>
+                            <xs:attribute type="xs:byte" name="hiNote" use="optional"/>
+                            <xs:attribute type="xs:int" name="loopStart" use="optional"/>
+                            <xs:attribute type="xs:int" name="loopEnd" use="optional"/>
+                          </xs:extension>
+                        </xs:simpleContent>
+                      </xs:complexType>
+                    </xs:element>
+                  </xs:sequence>
+                  <xs:attribute type="xs:string" name="name" use="optional"/>
+                  <xs:attribute type="xs:string" name="volume" use="optional"/>
+                  <xs:attribute type="xs:byte" name="ampVelTrack" use="optional"/>
+                  <xs:attribute type="xs:byte" name="modVolume" use="optional"/>
+                </xs:complexType>
+              </xs:element>
+            </xs:sequence>
+            <xs:attribute type="xs:float" name="attack"/>
+            <xs:attribute type="xs:float" name="decay"/>
+            <xs:attribute type="xs:float" name="sustain"/>
+            <xs:attribute type="xs:byte" name="release"/>
+          </xs:complexType>
+        </xs:element>
+        <xs:element name="effects">
+          <xs:complexType>
+            <xs:sequence>
+              <xs:element name="effect" maxOccurs="unbounded" minOccurs="0">
+                <xs:complexType>
+                  <xs:simpleContent>
+                    <xs:extension base="xs:string">
+                      <xs:attribute type="xs:string" name="type" use="optional"/>
+                    </xs:extension>
+                  </xs:simpleContent>
+                </xs:complexType>
+              </xs:element>
+            </xs:sequence>
+          </xs:complexType>
+        </xs:element>
+        <xs:element name="midi">
+          <xs:complexType>
+            <xs:sequence>
+              <xs:element name="cc">
+                <xs:complexType>
+                  <xs:sequence>
+                    <xs:element name="binding">
+                      <xs:complexType>
+                        <xs:simpleContent>
+                          <xs:extension base="xs:string">
+                            <xs:attribute type="xs:string" name="level"/>
+                            <xs:attribute type="xs:string" name="type"/>
+                            <xs:attribute type="xs:byte" name="position"/>
+                            <xs:attribute type="xs:string" name="parameter"/>
+                            <xs:attribute type="xs:string" name="translation"/>
+                            <xs:attribute type="xs:byte" name="translationOutputMin"/>
+                            <xs:attribute type="xs:float" name="translationOutputMax"/>
+                          </xs:extension>
+                        </xs:simpleContent>
+                      </xs:complexType>
+                    </xs:element>
+                  </xs:sequence>
+                  <xs:attribute type="xs:byte" name="number"/>
+                </xs:complexType>
+              </xs:element>
+            </xs:sequence>
+          </xs:complexType>
+        </xs:element>
+      </xs:sequence>
+      <xs:attribute type="xs:byte" name="pluginVersion"/>
+    </xs:complexType>
+  </xs:element>
+</xs:schema>

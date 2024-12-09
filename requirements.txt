@@ -1,0 +1,9 @@
+--extra-index-url https://download.pytorch.org/whl/cu113
+torch
+stable-audio-tools==0.0.16
+gradio==5.8.0
+einops
+spaces
+lxml
+transformers==4.44.0
+tokenizers==0.19.1
