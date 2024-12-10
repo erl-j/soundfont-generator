@@ -121,7 +121,7 @@ with demo:
     2. Adjust the number of generation steps to tradeoff between quality and speed (kindof).
     3. Click the "Generate Soundfont" button to generate the audio and soundfont.
     4. Preview the generated instrument with the keyboard.
-    5. Export the soundfont by clicking the "Download SFZ Soundfont Package" button. You can then use the soundfont in a SFZ-compatible VST. See [this list](https://sfzformat.com/software/players/) for a list of SFZ-compatible VSTs.
+    5. Export the soundfont by clicking the "Download SFZ Soundfont Package" button. You can then use the soundfont in a SFZ-compatible sampler. See [this list](https://sfzformat.com/software/players/) for a list of SFZ players.
     """)
 
 
