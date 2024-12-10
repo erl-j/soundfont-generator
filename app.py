@@ -155,6 +155,8 @@ with demo:
     """
 
     gr.HTML(html, min_height=800, max_height=800)
+
+    gr.Markdown("## Download Soundfont Package here:")
     with gr.Row():
         sf = gr.File(label="Download SFZ Soundfont Package", type="filepath", visible=True, elem_id="sfz")
 
