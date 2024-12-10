@@ -13,5 +13,3 @@ short_description: Generate soundfonts with latent flow matching
 # Soundfont Generator
 
 Hosted on hugginface spaces: [soundfont-generator](https://huggingface.co/spaces/erl-j/soundfont-generator)
-
-Check out the configuration reference at https://huggingface.co/docs/hub/spaces-config-reference
