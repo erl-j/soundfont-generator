@@ -1,7 +1,3 @@
-# Soundfont Generator
-
-Hosted on hugginface spaces: [soundfont-generator](https://huggingface.co/spaces/erl-j/soundfont-generator)
-
 ---
 title: soundfont-generator
 emoji: 🦦
@@ -13,5 +9,9 @@ app_file: app.py
 pinned: true
 short_description: Generate soundfonts with latent flow matching
 ---
+
+# Soundfont Generator
+
+Hosted on hugginface spaces: [soundfont-generator](https://huggingface.co/spaces/erl-j/soundfont-generator)
 
 Check out the configuration reference at https://huggingface.co/docs/hub/spaces-config-reference
