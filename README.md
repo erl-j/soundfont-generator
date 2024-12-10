@@ -12,4 +12,4 @@ short_description: Generate soundfonts with latent flow matching
 
 # Soundfont Generator
 
-Hosted on hugginface spaces: [soundfont-generator](https://huggingface.co/spaces/erl-j/soundfont-generator)
+Hosted on huggingface spaces: [soundfont-generator](https://huggingface.co/spaces/erl-j/soundfont-generator)
