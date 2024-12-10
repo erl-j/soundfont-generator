@@ -1,3 +1,7 @@
+# Soundfont Generator
+
+Hosted on hugginface spaces: [soundfont-generator](https://huggingface.co/spaces/erl-j/soundfont-generator)
+
 ---
 title: soundfont-generator
 emoji: 🦦
