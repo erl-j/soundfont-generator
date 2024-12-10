@@ -1,12 +1,13 @@
 ---
 title: soundfont-generator
-emoji: 🚀
-colorFrom: purple
-colorTo: blue
+emoji: 🦦
+colorFrom: green
+colorTo: gray
 sdk: gradio
 sdk_version: 5.8.0
 app_file: app.py
-pinned: false
+pinned: true
+short_description: Generate soundfonts with latent flow matching
 ---
 
 Check out the configuration reference at https://huggingface.co/docs/hub/spaces-config-reference
