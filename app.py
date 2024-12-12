@@ -109,23 +109,19 @@ def generate_and_export_soundfont(text, steps=20, instrument_name=None):
 custom_js = open("custom.js").read()
 custom_css = open("custom.css").read()
 
-demo = gr.Blocks(title="Erl-j's sound font generator", js=custom_js,
+demo = gr.Blocks(title="Erl-j's Soundfont Generator",
+                 theme = gr.themes.Default(
+                     primary_hue="green",
+                     font=[gr.themes.GoogleFont("Inconsolata"), "Arial", "sans-serif"]
+                     ),
+                  js=custom_js,
                  css = custom_css)
 
-with demo:
-    gr.Markdown("""
-    # Erl-j's Soundfont Generator.
-    Generate soundfonts from text descriptions using latent flow matching. You can then download the complete SFZ soundfont package to use the instrument locally.
-    ## Instructions
-    1. Enter a text prompt to describe the audio you want to generate. For example, *"hard bass"* or *"dark analog lead flute flute flute soft"*.
-    2. Adjust the number of generation steps to tradeoff between quality and speed (kindof).
-    3. Click the "Generate Soundfont" button to generate the audio and soundfont.
-    4. Preview the generated instrument with the keyboard.
-    5. Export the soundfont by clicking the "Download SFZ Soundfont Package" button. You can then use the soundfont in a SFZ-compatible sampler. See [this list](https://sfzformat.com/software/players/) for a list of SFZ players.
-    """)
-
-
-
+with demo:  
+    hero_html = open("hero.html").read()
+ 
+    gr.HTML(hero_html)
+    
     with gr.Row():
         steps = gr.Slider(
             minimum=1, maximum=50, value=20, step=1, label="Generation steps"
@@ -137,6 +133,7 @@ with demo:
             placeholder="Enter text description (e.g. 'hard bass', 'sparkly bells')",
             lines=2,
         )
+        
 
     with gr.Row():
         generate_btn = gr.Button("Generate Soundfont", variant="primary")
@@ -150,11 +147,11 @@ with demo:
 
     html = """
     <div id="custom-player"
-    style="width: 100%; height: 600px; background-color: "red"; border: 1px solid #f8f9fa; border-radius: 5px; margin-top: 10px;"
+    style="width: 100%; height: 600px; background-color: "white"; border: 1px solid #f8f9fa; border-radius: 5px; margin-top: 10px;"
     ></div>
     """
 
-    gr.HTML(html, min_height=800, max_height=800)
+    gr.HTML(html, min_height=1000, max_height=1000)
 
     gr.Markdown("## Download Soundfont Package here:")
     with gr.Row():

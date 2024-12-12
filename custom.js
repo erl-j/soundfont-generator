@@ -5,7 +5,7 @@ function previewPlayer() {
             this.initializeProperties();
             this.loadToneJS().then(() => this.init());
             this.setupWavFileObserver();
-        
+
 
             // Add click handlers for activation/deactivation
             this.container.addEventListener('click', (e) => {
@@ -71,6 +71,7 @@ function previewPlayer() {
             this.rowOffset = 4;
             this.activeNotes = new Map();
             this.reverb = null;
+            this.masterGain = null;
             this.releaseTime = 0.1;
             this.noteNames = ['C', 'C#', 'D', 'D#', 'E', 'F', 'F#', 'G', 'G#', 'A', 'A#', 'B'];
             this.majorScale = [0, 2, 4, 5, 7, 9, 11];
@@ -98,32 +99,39 @@ function previewPlayer() {
         createUI() {
             this.container.innerHTML = `
                 <div class="keyboard-container">
-                    <div class="effects-controls">
-                        <h3>Release & Reverb</h3>
-                        <div class="effect-slider">
-                            <label>Release: <span class="release-value">0.1s</span></label>
-                            <input type="range" class="release-slider" min="0" max="3" step="0.1" value="0.1">
+                   <div class="controls-section">
+                        <h3>Master & Effects</h3>
+                        <div class="control-group">
+                            <label class="slider-label">Release: <span class="release-value">0.1s</span></label>
+                            <input type="range" class="control-slider release-slider" min="0" max="3" step="0.1" value="0.1">
                         </div>
-                        <div class="effect-slider">
-                            <label>Reverb: <span class="reverb-value">50%</span></label>
-                            <input type="range" class="reverb-slider" min="0" max="100" value="50">
+                        <div class="controls-row">
+                            <div class="control-group half-width">
+                                <label class="slider-label">Reverb Mix: <span class="reverb-mix-value">20%</span></label>
+                                <input type="range" class="control-slider reverb-mix-slider" min="0" max="100" value="20">
+                            </div>
+                            <div class="control-group half-width">
+                                <label class="slider-label">Master: <span class="master-value">100%</span></label>
+                                <input type="range" class="control-slider master-slider" min="0" max="200" value="100">
+                            </div>
                         </div>
                     </div>
                     <div class="keyboard"></div>
-                    <br>
-                      <div class="mapping-controls">
+                    <div class="controls-section">
                         <h3>Keyboard Mapping</h3>
                         <div class="control-group">
-                            <label>Root Pitch: <span class="root-value">C4</span></label>
-                            <input type="range" class="root-slider" min="24" max="84" value="60">
+                            <label class="slider-label">Root Pitch: <span class="root-value">C4</span></label>
+                            <input type="range" class="control-slider root-slider" min="24" max="84" value="60">
                         </div>
-                        <div class="control-group">
-                            <label>Column Offset: <span class="column-value">2</span> keys from left</label>
-                            <input type="range" class="column-slider" min="0" max="6" value="2">
-                        </div>
-                        <div class="control-group">
-                            <label>Row Offset: <span class="row-value">4</span> scale degree(s)</label>
-                            <input type="range" class="row-slider" min="1" max="20" value="4">
+                        <div class="controls-row">
+                            <div class="control-group half-width">
+                                <label class="slider-label">Column Offset: <span class="column-value">2</span> keys</label>
+                                <input type="range" class="control-slider column-slider" min="0" max="6" value="2">
+                            </div>
+                            <div class="control-group half-width">
+                                <label class="slider-label">Row Offset: <span class="row-value">4</span> degrees</label>
+                                <input type="range" class="control-slider row-slider" min="1" max="20" value="4">
+                            </div>
                         </div>
                     </div>
                 </div>
@@ -134,6 +142,8 @@ function previewPlayer() {
         cacheElements() {
             const selectors = {
                 keyboard: '.keyboard',
+                masterSlider: '.master-slider',
+                masterValue: '.master-value',
                 rootSlider: '.root-slider',
                 rootValue: '.root-value',
                 columnSlider: '.column-slider',
@@ -142,26 +152,31 @@ function previewPlayer() {
                 rowValue: '.row-value',
                 releaseSlider: '.release-slider',
                 releaseValue: '.release-value',
-                reverbSlider: '.reverb-slider',
-                reverbValue: '.reverb-value'
+                reverbMixSlider: '.reverb-mix-slider',
+                reverbMixValue: '.reverb-mix-value'
             };
             this.elements = Object.fromEntries(
                 Object.entries(selectors).map(([key, selector]) =>
                     [key, this.container.querySelector(selector)]
                 )
             );
-        }
+        };
 
         setupEventListeners() {
             const handlers = {
+                masterSlider: e => {
+                    const gain = parseInt(e.target.value) / 100;
+                    this.masterGain.gain.value = gain;
+                    this.elements.masterValue.textContent = `${e.target.value}%`;
+                },
                 releaseSlider: e => {
                     this.releaseTime = parseFloat(e.target.value);
                     this.elements.releaseValue.textContent = `${this.releaseTime}s`;
                 },
-                reverbSlider: e => {
+                reverbMixSlider: e => {
                     const wetness = parseInt(e.target.value) / 100;
                     this.reverb.wet.value = wetness;
-                    this.elements.reverbValue.textContent = `${e.target.value}%`;
+                    this.elements.reverbMixValue.textContent = `${e.target.value}%`;
                 },
                 rootSlider: e => {
                     this.rootPitch = parseInt(e.target.value);
@@ -189,9 +204,13 @@ function previewPlayer() {
         }
 
         initializeEffects() {
-            this.reverb = new Tone.Reverb({ decay: 1.5, wet: 0.5 }).toDestination();
+            this.masterGain = new Tone.Gain(1).toDestination();
+            this.reverb = new Tone.Reverb({
+                decay: 1.5,
+                wet: 0.5,
+                preDelay: 0.01
+            }).connect(this.masterGain);
         }
-
         async initializeSampler() {
             const availableNotes = ['C1', 'F#1', 'C2', 'F#2', 'C3', 'F#3', 'C4', 'F#4', 'C5', 'F#5'];
             const urls = Object.fromEntries(
@@ -213,7 +232,7 @@ function previewPlayer() {
 
         handleSamplerError() {
             console.log('No WAV files found');
-            
+
         }
 
         handleSamplerLoad() {
