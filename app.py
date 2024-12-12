@@ -133,7 +133,7 @@ with demo:
             placeholder="Enter text description (e.g. 'hard bass', 'sparkly bells')",
             lines=2,
         )
-        
+
 
     with gr.Row():
         generate_btn = gr.Button("Generate Soundfont", variant="primary")
