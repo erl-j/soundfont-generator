@@ -16,7 +16,7 @@ from main import sfz, decentsampler
 # Download models from Hugging Face Hub
 decoder_path = hf_hub_download("erl-j/soundfont-generator-assets", "decoder.pt")
 model_path = hf_hub_download(
-    "erl-j/soundfont-generator-assets", "synth_lfm_classic_full.ckpt"
+    "erl-j/soundfont-generator-assets", "synth_lfm_modern_full.ckpt"
 )
 
 # Load models once at startup
