@@ -6,8 +6,6 @@ function previewPlayer() {
             this.loadToneJS().then(() => this.init());
             this.setupWavFileObserver();
 
-
-            // Add click handlers for activation/deactivation
             this.container.addEventListener('click', (e) => {
                 e.stopPropagation();
                 if (!this.keyboardEnabled) {
@@ -21,13 +19,30 @@ function previewPlayer() {
                 }
             });
 
-            // disable keyboard
             this.disableKeyboard();
         }
 
+        initializeProperties() {
+            this.sampler = null;
+            this.keyboardEnabled = true;
+            this.layout = null;
+            this.rootPitch = 36;
+            this.columnOffset = -12;
+            this.rowOffset = 4;
+            this.activeNotes = new Map();
+            this.reverb = null;
+            this.masterGain = null;
+            this.releaseTime = 1;
+            this.noteNames = ['C', 'C#', 'D', 'D#', 'E', 'F', 'F#', 'G', 'G#', 'A', 'A#', 'B'];
+            this.majorScale = [0, 2, 4, 5, 7, 9, 11];
+            this.isLoading = false;
+        }
+
         enableKeyboard() {
+            if (this.isLoading) return;
             this.keyboardEnabled = true;
             this.container.style.opacity = '1';
+            this.setLoaderState('inactive');
         }
 
         disableKeyboard() {
@@ -35,46 +50,16 @@ function previewPlayer() {
             this.container.style.opacity = '0.5';
         }
 
+        setLoaderState(state) {
+            const loader = this.container.querySelector('.loader');
+            loader.className = `loader ${state}`;
+            loader.style.display = state === 'active' ? 'flex' : 'none';
 
-
-        setupWavFileObserver() {
-            const observer = new MutationObserver((mutations) => {
-                const hasDownloadLinkChanges = mutations.some(mutation =>
-                    mutation.type === 'childList' &&
-                    mutation.target.classList.contains('download-link')
-                );
-
-                if (hasDownloadLinkChanges) {
-                    this.initializeSampler();
-                    this.enableKeyboard();
-                    // scroll so middle of keyboard is in centre of viewport
-                    const keyboardTop = this.container.querySelector('.keyboard').getBoundingClientRect().top;
-                    window.scrollTo(0, keyboardTop - window.innerHeight / 2, { behavior: 'smooth' });
-                }
-            });
-
-            const wavFilesContainer = document.getElementById('individual-wav-files');
-            if (wavFilesContainer) {
-                observer.observe(wavFilesContainer, {
-                    childList: true,
-                    subtree: true
-                });
+            if (state === 'active') {
+                loader.innerHTML = 'Loading samples... <span class="loader-emoji">🎹</span>';
+            } else {
+                loader.innerHTML = 'Ready <span class="loader-emoji">✨</span>';
             }
-        }
-
-        initializeProperties() {
-            this.sampler = null;
-            this.keyboardEnabled = true;
-            this.layout = null;
-            this.rootPitch = 60;
-            this.columnOffset = 2;
-            this.rowOffset = 4;
-            this.activeNotes = new Map();
-            this.reverb = null;
-            this.masterGain = null;
-            this.releaseTime = 0.1;
-            this.noteNames = ['C', 'C#', 'D', 'D#', 'E', 'F', 'F#', 'G', 'G#', 'A', 'A#', 'B'];
-            this.majorScale = [0, 2, 4, 5, 7, 9, 11];
         }
 
         async loadToneJS() {
@@ -98,11 +83,11 @@ function previewPlayer() {
 
         createUI() {
             this.container.innerHTML = `
-                <div class="keyboard-container">
-                   <div class="controls-section">
-                        <h3>Master & Effects</h3>
+                <div class="controls-section">
+                    <details>
+                        <summary><h3>Master & Effects</h3></summary>
                         <div class="control-group">
-                            <label class="slider-label">Release: <span class="release-value">0.1s</span></label>
+                            <label class="slider-label">Release: <span class="release-value">1s</span></label>
                             <input type="range" class="control-slider release-slider" min="0" max="3" step="0.1" value="0.1">
                         </div>
                         <div class="controls-row">
@@ -115,25 +100,30 @@ function previewPlayer() {
                                 <input type="range" class="control-slider master-slider" min="0" max="200" value="100">
                             </div>
                         </div>
-                    </div>
-                    <div class="keyboard"></div>
-                    <div class="controls-section">
-                        <h3>Keyboard Mapping</h3>
+                    </details>
+                </div>
+                <div class="keyboard"></div>
+                <div class="controls-section">
+                    <details>
+                        <summary><h3>Keyboard Mapping</h3></summary>
                         <div class="control-group">
                             <label class="slider-label">Root Pitch: <span class="root-value">C4</span></label>
                             <input type="range" class="control-slider root-slider" min="24" max="84" value="60">
                         </div>
                         <div class="controls-row">
                             <div class="control-group half-width">
-                                <label class="slider-label">Column Offset: <span class="column-value">2</span> keys</label>
-                                <input type="range" class="control-slider column-slider" min="0" max="6" value="2">
+                                <label class="slider-label">Column Offset: <span class="column-value">-12</span> keys</label>
+                                <input type="range" class="control-slider column-slider" min="-20" max="20" value="2">
                             </div>
                             <div class="control-group half-width">
                                 <label class="slider-label">Row Offset: <span class="row-value">4</span> degrees</label>
                                 <input type="range" class="control-slider row-slider" min="1" max="20" value="4">
                             </div>
                         </div>
-                    </div>
+                    </details>
+                </div>
+                <div class="loader inactive">
+                    Ready <span class="loader-emoji">🦦</span>
                 </div>
             `;
             this.cacheElements();
@@ -160,7 +150,7 @@ function previewPlayer() {
                     [key, this.container.querySelector(selector)]
                 )
             );
-        };
+        }
 
         setupEventListeners() {
             const handlers = {
@@ -203,6 +193,89 @@ function previewPlayer() {
             document.addEventListener('keyup', e => this.handleKeyEvent(e, false));
         }
 
+        setupWavFileObserver() {
+            const observer = new MutationObserver((mutations) => {
+                const hasDownloadLinkChanges = mutations.some(mutation =>
+                    mutation.type === 'childList' &&
+                    mutation.target.classList.contains('download-link')
+                );
+
+                if (hasDownloadLinkChanges) {
+                    this.initializeSampler();
+                    this.enableKeyboard();
+                    const keyboardTop = this.container.querySelector('.keyboard').getBoundingClientRect().top;
+                    window.scrollTo(0, keyboardTop - window.innerHeight / 2, { behavior: 'smooth' });
+                }
+            });
+
+            const wavFilesContainer = document.getElementById('individual-wav-files');
+            if (wavFilesContainer) {
+                observer.observe(wavFilesContainer, {
+                    childList: true,
+                    subtree: true
+                });
+            }
+        }
+
+        async initializeSampler() {
+            this.isLoading = true;
+            this.setLoaderState('active');
+            this.container.querySelectorAll('.key').forEach(key => key.style.opacity = '0.5');
+
+            const requiredNotes = ['C1', 'F#1', 'C2', 'F#2', 'C3', 'F#3', 'C4', 'F#4', 'C5', 'F#5'];
+            const urls = {};
+            let allNotesFound = true;
+
+            for (const note of requiredNotes) {
+                // Look for download links with the note name in them
+                const downloadLink = document.querySelector(`.download-link[href*="${note}.wav"], .download-link[href*="${note.replace('#', '')}.wav"]`);
+                if (downloadLink?.href) {
+                    urls[note] = downloadLink.href;
+                } else {
+                    console.log(`Could not find sample for note: ${note}`);
+                    allNotesFound = false;
+                    break;
+                }
+            }
+
+            if (!allNotesFound) {
+                this.handleSamplerError();
+                return;
+            }
+
+            if (this.sampler) {
+                this.sampler.dispose();
+            }
+
+            try {
+                this.sampler = new Tone.Sampler({
+                    urls,
+                    onload: () => this.handleSamplerLoad(),
+                    onerror: (error) => {
+                        console.error('Sampler loading error:', error);
+                        this.handleSamplerError();
+                    }
+                }).connect(this.reverb);
+            } catch (error) {
+                console.error('Sampler initialization error:', error);
+                this.handleSamplerError();
+            }
+        }
+
+        handleSamplerLoad() {
+            console.log('All samples loaded successfully');
+            this.isLoading = false;
+            this.container.querySelectorAll('.key').forEach(key => key.style.opacity = '1');
+            this.setLoaderState('inactive');
+            this.enableKeyboard();
+        }
+
+        handleSamplerError() {
+            console.log('No WAV files found');
+            this.isLoading = false;
+            this.setLoaderState('inactive');
+        }
+
         initializeEffects() {
             this.masterGain = new Tone.Gain(1).toDestination();
             this.reverb = new Tone.Reverb({
@@ -210,34 +283,6 @@ function previewPlayer() {
                 wet: 0.5,
                 preDelay: 0.01
             }).connect(this.masterGain);
-        }
-        async initializeSampler() {
-            const availableNotes = ['C1', 'F#1', 'C2', 'F#2', 'C3', 'F#3', 'C4', 'F#4', 'C5', 'F#5'];
-            const urls = Object.fromEntries(
-                availableNotes
-                    .map(note => [note, document.querySelector(`a[href*="${note}.wav"]`)?.href])
-                    .filter(([, url]) => url)
-            );
-
-            if (!Object.keys(urls).length) {
-                this.handleSamplerError();
-                return;
-            }
-
-            this.sampler = new Tone.Sampler({
-                urls,
-                onload: () => this.handleSamplerLoad(),
-            }).connect(this.reverb);
-        }
-
-        handleSamplerError() {
-            console.log('No WAV files found');
-
-        }
-
-        handleSamplerLoad() {
-            console.log('Sampler loaded');
-            this.container.querySelectorAll('.key').forEach(key => key.style.opacity = '1');
         }
 
         detectKeyboardLayout() {
@@ -364,11 +409,11 @@ function previewPlayer() {
         }
     }
 
-    let container = document.getElementById('custom-player');
+    let container = document.getElementById('keyboard-container');
     if (!container) {
         container = document.createElement('div');
-        container.id = 'custom-player';
+        container.id = 'keyboard-container';
         document.body.appendChild(container);
     }
-    new KeyboardPlayer('custom-player');
+    new KeyboardPlayer('keyboard-container');
 }

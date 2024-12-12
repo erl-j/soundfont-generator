@@ -69,6 +69,7 @@ def generate_and_export_soundfont(text, steps=20, instrument_name=None):
         "F#7",
         "C8",
     ]
+
     wav_files = []
     for i in range(audio.shape[0]):
         wav_path = f"{output_dir}/{pitches[i]}.wav"
@@ -150,12 +151,10 @@ with demo:
         )
 
     html = """
-    <div id="custom-player"
-    style="width: 100%; height: 600px; border: 1px solid #f8f9fa; border-radius: 5px; margin-top: 10px;"
-    ></div>
+    <div id="keyboard-container"></div>
     """
 
-    gr.HTML(html, min_height=1000, max_height=1000)
+    gr.HTML(html)
 
     gr.Markdown("## Download Soundfont Package here:")
     with gr.Row():

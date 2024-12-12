@@ -1,54 +1,58 @@
-/* CSS Variables */
 :root {
     --keyboard-bg: #fafafa;
     --inactive-key-bg: #e0e0e0;
     --border-color: #e5e5e5;
     --slider-track: #393a39;
     --slider-thumb: #000000;
+    --key-ratio: 1;
 }
 
-/* Base styles */
-html, body, #root, .wrapper, main, .main-container {
-    min-height: 100vh;
-    margin: 0;
-    padding: 0;
+#keyboard-container {
     width: 100%;
-    max-width: 100%;
-}
-
-body {
-    font-family: 'Roboto', sans-serif;
-    font-size: 1rem;
-    line-height: 1.5;
-    overflow-x: hidden;
-    transition: background-color 0.2s ease;
-}
-
-/* Keyboard layout */
-.keyboard-container {
-    width: 100%;
-    padding: 1.5rem;
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 0.25rem;
     background: var(--keyboard-bg);
-    border: 1px solid var(--border-color);
+    border: 2px solid var(--border-color);
     border-radius: 4px;
     user-select: none;
-    color: #333;
+    box-sizing: border-box;
+    color: #000000;  /* Add this - sets a default dark color for all text */
+}
+
+/* Make all text elements inside use the inherited color */
+#keyboard-container .key-label,
+#keyboard-container .note-label,
+#keyboard-container .slider-label,
+#keyboard-container span,
+#keyboard-container h3,
+#keyboard-container summary {
+    color: black;
+}
+
+.keyboard {
+    width: 100%;
+    padding: 0.25rem 0;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    box-sizing: border-box;
 }
 
 .keyboard-row {
     display: flex;
-    gap: 0.25rem;
-    margin-bottom: 0.25rem;
+    gap: 0.125rem;
+    margin-bottom: 0.125rem;
     width: 100%;
+    justify-content: center;
+    box-sizing: border-box;
 }
 
-/* Key styles */
 .key {
-    width: calc((100% - 2.75rem) / 12);
-    aspect-ratio: 1;
-    min-width: 40px;
-    flex: none;
-    padding: 0.5rem;
+    /* Smaller base size with viewport-based scaling */
+    width: clamp(1.5rem, min(4vw + 0.75rem, 3rem), 3rem);
+    height: clamp(1.5rem, min(4vw + 0.75rem, 3rem), 3rem);
+    padding: 0.125rem;
     border: 2px solid var(--border-color);
     border-radius: 4px;
     cursor: pointer;
@@ -57,143 +61,198 @@ body {
     flex-direction: column;
     align-items: center;
     justify-content: center;
-}
-
-.key:hover {
-    transform: translateY(-1px);
-}
-
-.key:active {
-    transform: translateY(0);
-}
-
-.key.inactive,
-.key:disabled {
-    background: var(--inactive-key-bg);
+    touch-action: none;
+    background: white;
+    flex-shrink: 0;
+    box-sizing: border-box;
 }
 
 .key-label {
-    font-size: 0.875rem;
+    font-size: clamp(0.5rem, min(1.5vw + 0.4rem, 0.875rem), 0.875rem);
     font-weight: 500;
     color: #333;
 }
 
 .note-label {
-    font-size: 0.75rem;
-    margin-top: 0.25rem;
+    font-size: clamp(0.4rem, min(1.25vw + 0.3rem, 0.75rem), 0.75rem);
     color: #666;
+}
+
+/* Additional reduction for very small screens */
+@media (max-width: 360px) {
+    .keyboard-row {
+        gap: 0.1rem;
+    }
+    
+    .key {
+        width: clamp(1.25rem, 3.5vw + 0.5rem, 1.75rem);
+        height: clamp(1.25rem, 3.5vw + 0.5rem, 1.75rem);
+        padding: 0.1rem;
+    }
+
+    .key-label {
+        font-size: clamp(0.4rem, 1.25vw + 0.35rem, 0.5rem);
+    }
+
+    .note-label {
+        font-size: clamp(0.35rem, 1vw + 0.3rem, 0.45rem);
+    }
+}
+
+/* Larger screens */
+@media (min-width: 768px) {
+    .keyboard-row {
+        gap: 0.25rem;
+        margin-bottom: 0.25rem;
+    }
+
+    .key {
+        padding: 0.25rem;
+    }
 }
 
 /* Controls section */
 .controls-section {
-    margin: 1em 0;
-    padding: 1em;
+    margin: 0.5rem 0;
+    width: 100%;
+    box-sizing: border-box;
+}
+
+.controls-section details {
+    background: white;
+    border: 1px solid var(--border-color);
+    border-radius: 4px;
+    padding: 0.5rem;
+}
+
+.controls-section summary {
+    cursor: pointer;
+    padding: 0.5rem;
+}
+
+.controls-section summary h3 {
+    display: inline;
+    margin: 0;
 }
 
 .controls-row {
     display: flex;
-    gap: 1em;
-    margin: 1em 0;
+    flex-direction: column;
+    gap: 1rem;
 }
 
 .control-group {
-    margin: 1em 0;
+    margin: 0.5rem 0;
 }
 
 .control-group.half-width {
     flex: 1;
-    margin: 0;
 }
 
-/* Labels and values */
-.slider-label,
-h3 {
-    display: block;
-    margin-bottom: 0.5em;
-    font-size: 0.9em;
-    color: #333;
-}
-
-h3 {
-    margin-top: 0;
-    font-size: 1rem;
-    font-weight: 500;
-}
-
-/* Range inputs */
-input[type="range"] {
+/* Slider styles */
+.control-slider {
     width: 100%;
-    height: 24px;
+    height: 44px;
+    padding: 14px 0;
     background: transparent;
-    border-radius: 2px;
+    -webkit-appearance: none;
     appearance: none;
-    cursor: pointer;
-    margin: 0.5em 0;
-    padding: 10px 0;
 }
 
-input[type="range"]::-webkit-slider-thumb {
-    appearance: none;
-    width: 16px;
-    height: 16px;
+.control-slider::-webkit-slider-thumb {
+    -webkit-appearance: none;
+    width: 28px;
+    height: 28px;
     background: var(--slider-thumb);
     border-radius: 50%;
     cursor: pointer;
-    margin-top: -6px;
+    margin-top: -14px;
 }
 
-input[type="range"]::-webkit-slider-runnable-track {
-    background: var(--slider-track);
+.control-slider::-webkit-slider-runnable-track {
+    width: 100%;
     height: 4px;
+    background: var(--slider-track);
     border-radius: 2px;
 }
 
-input[type="range"]::-moz-range-thumb {
-    width: 16px;
-    height: 16px;
-    background: var(--slider-thumb);
-    border: none;
-    border-radius: 50%;
-    cursor: pointer;
-}
 
-input[type="range"]::-moz-range-track {
-    background: var(--slider-track);
-    height: 4px;
-    border-radius: 2px;
-}
-
-/* Mobile styles */
-@media (max-width: 768px) {
-    .control-group {
-        min-width: 100%;
-    }
-    
+/* Media Queries */
+@media (min-width: 768px) {
     .key {
-        min-width: 35px;
+        width: 3.5rem;
+        height: 3.5rem;
     }
     
     .key-label {
+        font-size: 1rem;
+    }
+    
+    .note-label {
         font-size: 0.75rem;
     }
     
-    input[type="range"] {
-        height: 32px;
-        padding: 14px 0;
-    }
-    
-    input[type="range"]::-webkit-slider-thumb {
-        width: 28px;
-        height: 28px;
+    .controls-row {
+        flex-direction: row;
     }
 }
 
+@media (min-width: 1024px) {
+    .key {
+        width: 4rem;
+        height: 4rem;
+    }
+}
 
-.release-value,
-.reverb-mix-value,
-.master-value,
-.root-value,
-.column-value,
-.row-value {
-    color: black;
-}   
+/* Ensure proper box-sizing everywhere */
+*, *::before, *::after {
+    box-sizing: border-box;
+}
+
+.loader {
+    position: fixed;
+    bottom: 20px;
+    left: 50%;
+    transform: translateX(-50%);
+    padding: 10px 20px;
+    border-radius: 20px;
+    font-size: 14px;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    transition: all 0.3s ease;
+    z-index: 1000;
+}
+
+.loader.active {
+    background-color: #03ae5e;
+    border: 1px solid #00ff22;
+    color: #00ffae;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+}
+
+.loader.inactive {
+    background-color: #e8f5e9;
+    border: 1px solid #81c784;
+    color: #2e7d32;
+}
+
+.loader-emoji {
+    font-size: 16px;
+    animation: bounce 1s infinite;
+}
+
+.loader.active .loader-emoji {
+    animation: spin 1s infinite linear;
+}
+
+@keyframes bounce {
+    0%, 100% { transform: translateY(0); }
+    50% { transform: translateY(-3px); }
+}
+
+
+@keyframes spin {
+    from { transform: rotate(0deg); }
+    to { transform: rotate(360deg); }
+}
