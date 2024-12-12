@@ -13,19 +13,16 @@ from huggingface_hub import hf_hub_download
 
 sys.path.append("sf-creator-fork")
 from main import sfz, decentsampler
-
-decoder_path = "erl-j/soundfont-generator-assets/decoder.pt"
-model_path = "erl-j/soundfont-generator-assets/synth_lfm_modern_bfloat16.pt"
 # Download models from Hugging Face Hub
 decoder_path = hf_hub_download("erl-j/soundfont-generator-assets", "decoder.pt")
 model_path = hf_hub_download(
-    "erl-j/soundfont-generator-assets", "synth_lfm_modern_bfloat16.pt"
+    "erl-j/soundfont-generator-assets", "synth_lfm_classic_full.ckpt"
 )
 
 # Load models once at startup
 device = "cuda"
-decoder = torch.load(decoder_path, map_location=device).half().eval()
-model = torch.load(model_path, map_location=device).half().eval()
+decoder = torch.load(decoder_path, map_location=device).eval()
+model = torch.load(model_path, map_location=device).eval()
 
 
 @spaces.GPU
