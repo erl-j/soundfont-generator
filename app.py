@@ -18,16 +18,15 @@ decoder_path = "erl-j/soundfont-generator-assets/decoder.pt"
 model_path = "erl-j/soundfont-generator-assets/synth_lfm_modern_bfloat16.pt"
 # Download models from Hugging Face Hub
 decoder_path = hf_hub_download("erl-j/soundfont-generator-assets", "decoder.pt")
-model_path = hf_hub_download("erl-j/soundfont-generator-assets", "synth_lfm_modern_bfloat16.pt")
+model_path = hf_hub_download(
+    "erl-j/soundfont-generator-assets", "synth_lfm_modern_bfloat16.pt"
+)
 
 # Load models once at startup
 device = "cuda"
 decoder = torch.load(decoder_path, map_location=device).half().eval()
-model = (
-    torch.load(model_path, map_location=device)
-    .half()
-    .eval()
-)
+model = torch.load(model_path, map_location=device).half().eval()
+
 
 @spaces.GPU
 def generate_and_export_soundfont(text, steps=20, instrument_name=None):
@@ -104,24 +103,25 @@ def generate_and_export_soundfont(text, steps=20, instrument_name=None):
         f"Generation took {total_time:.2f}s\nFiles saved in {output_dir}",
         zip_path,
         wav_files,
-    )   
+    )
+
 
 custom_js = open("custom.js").read()
 custom_css = open("custom.css").read()
 
-demo = gr.Blocks(title="Erl-j's Soundfont Generator",
-                 theme = gr.themes.Default(
-                     primary_hue="green",
-                     font=[gr.themes.GoogleFont("Inconsolata"), "Arial", "sans-serif"]
-                     ),
-                  js=custom_js,
-                 css = custom_css)
+demo = gr.Blocks(
+    title="Erl-j's Soundfont Generator",
+    theme=gr.themes.Default(
+        primary_hue="green",
+        font=[gr.themes.GoogleFont("Inconsolata"), "Arial", "sans-serif"],
+    ),
+    js=custom_js,
+    css=custom_css,
+)
 
-with demo:  
-    hero_html = open("hero.html").read()
- 
-    gr.HTML(hero_html)
-    
+with demo:
+    gr.Markdown(open("intro.md").read())
+
     with gr.Row():
         steps = gr.Slider(
             minimum=1, maximum=50, value=20, step=1, label="Generation steps"
@@ -134,7 +134,6 @@ with demo:
             lines=2,
         )
 
-
     with gr.Row():
         generate_btn = gr.Button("Generate Soundfont", variant="primary")
 
@@ -143,11 +142,16 @@ with demo:
         status_output = gr.Textbox(label="Status", lines=2, visible=False)
 
     with gr.Row():
-        wav_files = gr.File(label="Individual WAV Files", file_count="multiple", visible=False, elem_id="individual-wav-files")
+        wav_files = gr.File(
+            label="Individual WAV Files",
+            file_count="multiple",
+            visible=False,
+            elem_id="individual-wav-files",
+        )
 
     html = """
     <div id="custom-player"
-    style="width: 100%; height: 600px; background-color: "white"; border: 1px solid #f8f9fa; border-radius: 5px; margin-top: 10px;"
+    style="width: 100%; height: 600px; border: 1px solid #f8f9fa; border-radius: 5px; margin-top: 10px;"
     ></div>
     """
 
@@ -155,7 +159,12 @@ with demo:
 
     gr.Markdown("## Download Soundfont Package here:")
     with gr.Row():
-        sf = gr.File(label="Download SFZ Soundfont Package", type="filepath", visible=True, elem_id="sfz")
+        sf = gr.File(
+            label="Download SFZ Soundfont Package",
+            type="filepath",
+            visible=True,
+            elem_id="sfz",
+        )
 
     gr.Markdown("""
     # About            

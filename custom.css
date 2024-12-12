@@ -1,43 +1,14 @@
 /* CSS Variables */
 :root {
-    /* Light mode */
-    --background-color: #f5f5f5;
-    --container-background: #fafafa;
-    --key-background: white;
-    --key-hover-background: #f5f5f5;
-    --border-color: #e5e5e5;
-    --text-primary: #333;
-    --text-secondary: #666;
-    --slider-track: #393a39;
-    --slider-thumb: #000000;
-    --button-background: #015131;
-    --button-hover: #002114;
-    --button-text: white;
     --keyboard-bg: #fafafa;
     --inactive-key-bg: #e0e0e0;
-}
-
-@media (prefers-color-scheme: dark) {
-    :root {
-        --background-color: #121212;
-        --container-background: #1e1e1e;
-        --key-background: #2d2d2d;
-        --key-hover-background: #3d3d3d;
-        --border-color: #404040;
-        --text-primary: #e0e0e0;
-        --text-secondary: #a0a0a0;
-        --slider-track: #666666;
-        --slider-thumb: #015131;
-        --button-background: #015131;
-        --button-hover: #026b41;
-        --keyboard-bg: #1e1e1e;
-        --inactive-key-bg: #2d2d2d;
-    }
+    --border-color: #e5e5e5;
+    --slider-track: #393a39;
+    --slider-thumb: #000000;
 }
 
 /* Base styles */
 html, body, #root, .wrapper, main, .main-container {
-    background-color: var(--background-color);
     min-height: 100vh;
     margin: 0;
     padding: 0;
@@ -49,11 +20,9 @@ body {
     font-family: 'Roboto', sans-serif;
     font-size: 1rem;
     line-height: 1.5;
-    color: var(--text-primary);
     overflow-x: hidden;
     transition: background-color 0.2s ease;
 }
-
 
 /* Keyboard layout */
 .keyboard-container {
@@ -63,6 +32,7 @@ body {
     border: 1px solid var(--border-color);
     border-radius: 4px;
     user-select: none;
+    color: #333;
 }
 
 .keyboard-row {
@@ -79,9 +49,8 @@ body {
     min-width: 40px;
     flex: none;
     padding: 0.5rem;
-    border: 1px solid var(--border-color);
+    border: 2px solid var(--border-color);
     border-radius: 4px;
-    background: var(--key-background);
     cursor: pointer;
     transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
     display: flex;
@@ -91,7 +60,6 @@ body {
 }
 
 .key:hover {
-    background: var(--key-hover-background);
     transform: translateY(-1px);
 }
 
@@ -107,13 +75,13 @@ body {
 .key-label {
     font-size: 0.875rem;
     font-weight: 500;
-    color: var(--text-primary);
+    color: #333;
 }
 
 .note-label {
     font-size: 0.75rem;
-    color: var(--text-secondary);
     margin-top: 0.25rem;
+    color: #666;
 }
 
 /* Controls section */
@@ -143,23 +111,12 @@ h3 {
     display: block;
     margin-bottom: 0.5em;
     font-size: 0.9em;
-    color: var(--text-primary);
+    color: #333;
 }
 
 h3 {
     margin-top: 0;
     font-size: 1rem;
-    font-weight: 500;
-}
-
-.slider-value,
-.master-value,
-.release-value,
-.reverb-mix-value,
-.root-value,
-.column-value,
-.row-value {
-    color: var(--text-secondary);
     font-weight: 500;
 }
 
@@ -230,3 +187,13 @@ input[type="range"]::-moz-range-track {
         height: 28px;
     }
 }
+
+
+.release-value,
+.reverb-mix-value,
+.master-value,
+.root-value,
+.column-value,
+.row-value {
+    color: black;
+}   
