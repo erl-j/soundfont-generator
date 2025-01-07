@@ -146,13 +146,7 @@ with demo:
             visible=False,
             elem_id="individual-wav-files",
         )
-
-    html = """
-    <div id="keyboard-container"></div>
-    """
-
-    gr.HTML(html)
-
+    
     gr.Markdown("## Download Soundfont Package here:")
     with gr.Row():
         sf = gr.File(
@@ -162,6 +156,13 @@ with demo:
             elem_id="sfz",
         )
 
+    html = """
+    <div id="keyboard-container"></div>
+    """
+
+    gr.HTML(html)
+
+    
     gr.Markdown("""
     # About            
     The model is a modified version of [stable audio open](https://huggingface.co/stabilityai/stable-audio-open-1.0).
